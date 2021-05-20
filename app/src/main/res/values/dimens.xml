@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_start">12dp</dimen>
+    <dimen name="margin_end">12dp</dimen>
+    <dimen name="margin_top">20dp</dimen>
+    <dimen name="margin_bottom">12dp</dimen>
+    <dimen name="title">20sp</dimen>
+    <dimen name="add_note_button">50dp</dimen>
+    <dimen name="padding">5dp</dimen>
+
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">GalleryNotes</string>
+    <string name="my_gallery_notes">My Gallery Notes</string>
+    <string name="note_title">Note Title</string>
+    <string name="note_content">Note Content...</string>
+
+</resources>
