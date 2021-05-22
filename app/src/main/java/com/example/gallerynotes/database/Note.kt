@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+//Note table
 @Entity(tableName = "notes")
 data class Note (
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name="id")
@@ -23,6 +24,4 @@ data class Note (
 
 //    @ColumnInfo(name="image_path")
 //    val imagePath : String,
-
-
 )

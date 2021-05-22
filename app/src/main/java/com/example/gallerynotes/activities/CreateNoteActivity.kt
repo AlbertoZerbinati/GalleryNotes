@@ -20,33 +20,41 @@ class CreateNoteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_note)
 
-        val backImage : ImageView = findViewById(R.id.back)
+        //view model for saving data in db
         myNoteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
+
+        //note components
         noteTitle = findViewById(R.id.note_title)
         noteContent = findViewById(R.id.note_content)
 
+        //back button
+        val backImage : ImageView = findViewById(R.id.back)
         backImage.setOnClickListener{
-            //TODO: automatically save input text in DB (if not both empty)
             onBackPressed()
         }
     }
 
     override fun onBackPressed() {
+        //save notes before terminating this activity and going back to MainActivity
         saveNote()
         super.onBackPressed()
     }
 
-    fun saveNote() {
+    private fun saveNote() {
+        //get inputs
         val title = noteTitle.getText().toString().trim()
         val content = noteContent.getText().toString().trim()
+
+        //if empty note than not save it
         if (title.isEmpty() && content.isEmpty()) {
             Toast.makeText(this, getString(R.string.empty_not_saved), Toast.LENGTH_SHORT).show()
             return
         }
-        Log.e("insert","ciao")
 
+        //else create a new note with the inputs
         val note = Note(0,title,content)
+        //and save it into the db through the viewmodel
         myNoteViewModel.insert(note)
-        Toast.makeText(this, "saved", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "saved", Toast.LENGTH_SHORT).show()
     }
 }

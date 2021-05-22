@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //setup recycler view
         val recyclerView = findViewById<RecyclerView>(R.id.notesRV)
         val adapter = NotesAdapter(this)
         recyclerView.adapter = adapter
@@ -28,19 +29,19 @@ class MainActivity : AppCompatActivity() {
         // Get a new or existing ViewModel from the ViewModelProvider.
         noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
 
-        // Add an observer on the LiveData returned by getAlphabetizedWords.
+        // Add an observer on the LiveData returned by getAllNotes.
         // The onChanged() method fires when the observed data changes and the activity is
         // in the foreground.
         noteViewModel.allNotes.observe(
             this,
-            Observer { notes ->
+            { notes ->
                 // Update the cached copy of the words in the adapter.
                 notes?.let { adapter.setNotes(it) }
             }
         )
 
 
-
+        // floating action button: starts CreateNoteActivity
         val addNoteImage : ImageView = findViewById(R.id.imageAddNote)
         addNoteImage.setOnClickListener { view ->
             val intent = Intent(view.context, CreateNoteActivity::class.java)
