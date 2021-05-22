@@ -1,9 +1,10 @@
-package com.example.gallerynotes
+package com.example.gallerynotes.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
+import com.example.gallerynotes.R
 
 class MainActivity : AppCompatActivity() {
     private val RC_ADD_NOTE : Int= 1;
