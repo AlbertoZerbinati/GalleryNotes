@@ -1,8 +1,10 @@
 package com.example.gallerynotes.database
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 //Note table
 @Entity(tableName = "notes")
@@ -24,4 +26,4 @@ data class Note (
 
 //    @ColumnInfo(name="image_path")
 //    val imagePath : String,
-)
+) : Serializable

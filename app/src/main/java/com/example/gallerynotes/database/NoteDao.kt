@@ -2,6 +2,7 @@ package com.example.gallerynotes.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import java.text.FieldPosition
 
 //contains Data accessing methods (queries)
 @Dao

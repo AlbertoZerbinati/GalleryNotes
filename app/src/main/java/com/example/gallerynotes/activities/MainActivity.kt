@@ -3,17 +3,22 @@ package com.example.gallerynotes.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.gallerynotes.R
+import com.example.gallerynotes.database.Note
 import com.example.gallerynotes.database.NoteViewModel
+import com.example.gallerynotes.utils.FadeInStaggeredGridLayoutManager
+import com.example.gallerynotes.utils.NotesAdapter
+import com.example.gallerynotes.utils.NotesListener
+import java.io.Serializable
 
-class MainActivity : AppCompatActivity() {
-//    private val RC_ADD_NOTE : Int= 1;
+class MainActivity : AppCompatActivity(), NotesListener {
+    private val RC_ADD_NOTE : Int = 1
+    private val RC_UPDATE_NOTE : Int = 2
     private lateinit var noteViewModel: NoteViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         //setup recycler view
         val recyclerView = findViewById<RecyclerView>(R.id.notesRV)
-        val adapter = NotesAdapter(this)
+        val adapter = NotesAdapter(this, this) //pass 'this' as NotesListener
         recyclerView.adapter = adapter
         recyclerView.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
 
@@ -42,12 +47,21 @@ class MainActivity : AppCompatActivity() {
 
 
         // floating action button: starts CreateNoteActivity
-        val addNoteImage : ImageView = findViewById(R.id.imageAddNote)
-        addNoteImage.setOnClickListener { view ->
-            val intent = Intent(view.context, CreateNoteActivity::class.java)
+        val fab: View = findViewById(R.id.fab)
+        fab.setOnClickListener { view ->
+            val intent = Intent(view.context, CreateOrUpdateNoteActivity::class.java)
+            intent.putExtra("requestCode", RC_ADD_NOTE)
             startActivity(intent)
         }
+    }
 
+    //when a note is clicked we need to start the update activity
+    override fun onNoteClicked(note: Note, position: Int) {
+//        Toast.makeText(this, "$position", Toast.LENGTH_SHORT).show()
+        val intent = Intent(applicationContext, CreateOrUpdateNoteActivity::class.java)
+        intent.putExtra("requestCode", RC_UPDATE_NOTE)
+        intent.putExtra("note", note as Serializable)
+        startActivity(intent)
 
     }
 }
