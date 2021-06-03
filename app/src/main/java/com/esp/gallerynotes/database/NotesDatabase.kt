@@ -1,4 +1,4 @@
-package com.example.gallerynotes.database
+package com.esp.gallerynotes.database
 
 import android.content.Context
 import androidx.room.Database

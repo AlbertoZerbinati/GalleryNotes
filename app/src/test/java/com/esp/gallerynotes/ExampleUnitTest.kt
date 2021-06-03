@@ -1,4 +1,4 @@
-package com.example.gallerynotes
+package com.esp.gallerynotes
 
 import org.junit.Test
 

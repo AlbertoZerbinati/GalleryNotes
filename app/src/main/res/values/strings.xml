@@ -4,5 +4,9 @@
     <string name="note_title">Note Title</string>
     <string name="note_content">Note Content...</string>
     <string name="empty_not_saved">Empty Note not saved</string>
+    <string name="back">back</string>
+    <string name="add">add</string>
+    <string name="no_picker">No image picker available</string>
+    <string name="delete_image">delete image</string>
 
 </resources>

@@ -9,4 +9,6 @@
     <color name="sunset_orange">#FE5F55</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="icons">#666666</color>
+    <color name="red">#E71607</color>
 </resources>

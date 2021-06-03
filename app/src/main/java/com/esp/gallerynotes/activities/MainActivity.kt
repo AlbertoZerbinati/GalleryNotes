@@ -1,19 +1,17 @@
-package com.example.gallerynotes.activities
+package com.esp.gallerynotes.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.gallerynotes.R
-import com.example.gallerynotes.database.Note
-import com.example.gallerynotes.database.NoteViewModel
-import com.example.gallerynotes.utils.FadeInStaggeredGridLayoutManager
-import com.example.gallerynotes.utils.NotesAdapter
-import com.example.gallerynotes.utils.NotesListener
+import com.esp.gallerynotes.R
+import com.esp.gallerynotes.database.Note
+import com.esp.gallerynotes.database.NoteViewModel
+import com.esp.gallerynotes.utils.NotesAdapter
+import com.esp.gallerynotes.utils.NotesListener
 import java.io.Serializable
 
 class MainActivity : AppCompatActivity(), NotesListener {
@@ -59,9 +57,10 @@ class MainActivity : AppCompatActivity(), NotesListener {
     override fun onNoteClicked(note: Note, position: Int) {
 //        Toast.makeText(this, "$position", Toast.LENGTH_SHORT).show()
         val intent = Intent(applicationContext, CreateOrUpdateNoteActivity::class.java)
-        intent.putExtra("requestCode", RC_UPDATE_NOTE)
-        intent.putExtra("note", note as Serializable)
-        startActivity(intent)
-
+        with(intent) {
+            putExtra("requestCode", RC_UPDATE_NOTE)
+            putExtra("note", note as Serializable)
+            startActivity(this)
+        }
     }
 }
