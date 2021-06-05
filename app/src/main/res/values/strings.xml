@@ -8,5 +8,6 @@
     <string name="add">add</string>
     <string name="no_picker">No image picker available</string>
     <string name="delete_image">delete image</string>
+    <string name="no_content_to_share">No content to share</string>
 
 </resources>

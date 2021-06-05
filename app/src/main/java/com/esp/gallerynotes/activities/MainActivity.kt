@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity(), NotesListener {
         // floating action button: starts CreateNoteActivity
         val fab: View = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
-            val intent = Intent(view.context, CreateOrUpdateNoteActivity::class.java)
+            val intent = Intent(view.context, NoteDetailActivity::class.java)
             intent.putExtra("requestCode", RC_ADD_NOTE)
             startActivity(intent)
         }
@@ -55,8 +55,7 @@ class MainActivity : AppCompatActivity(), NotesListener {
 
     //when a note is clicked we need to start the update activity
     override fun onNoteClicked(note: Note, position: Int) {
-//        Toast.makeText(this, "$position", Toast.LENGTH_SHORT).show()
-        val intent = Intent(applicationContext, CreateOrUpdateNoteActivity::class.java)
+        val intent = Intent(applicationContext, NoteDetailActivity::class.java)
         with(intent) {
             putExtra("requestCode", RC_UPDATE_NOTE)
             putExtra("note", note as Serializable)

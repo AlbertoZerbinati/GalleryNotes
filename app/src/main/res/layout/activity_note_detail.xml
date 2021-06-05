@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.CreateOrUpdateNoteActivity">
+    tools:context=".activities.NoteDetailActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -22,8 +22,8 @@
 
             <ImageView
                 android:id="@+id/back"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:padding="4dp"
@@ -35,8 +35,8 @@
 
             <ImageView
                 android:id="@+id/add_image"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginEnd="10dp"
                 android:padding="4dp"
                 android:src="@drawable/ic_image"
@@ -49,8 +49,8 @@
 
             <ImageView
                 android:id="@+id/share"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginEnd="10dp"
                 android:contentDescription="share"
                 android:padding="4dp"
@@ -62,8 +62,8 @@
 
             <ImageView
                 android:id="@+id/delete"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginEnd="10dp"
                 android:padding="4dp"
                 android:src="@drawable/ic_delete"
@@ -73,6 +73,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/back"
                 />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/columbia_blue"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/back" />
 
             <EditText
                 android:id="@+id/note_title"
@@ -89,9 +101,10 @@
                 android:inputType="textCapSentences"
                 android:padding="6sp"
                 android:textColor="@color/stormcloud"
+                android:fontFamily="@font/opensans_semibolditalic"
                 android:textColorHint="@color/columbia_blue"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/back"/>
+                app:layout_constraintTop_toBottomOf="@id/divider"/>
 
             <ImageView
                 android:id="@+id/note_image"
@@ -109,8 +122,8 @@
 
             <ImageView
                 android:id="@+id/delete_image"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="10dp"
                 android:padding="4dp"
@@ -140,6 +153,7 @@
                 android:padding="6sp"
                 android:textColor="@color/stormcloud"
                 android:textColorHint="@color/columbia_blue"
+                android:fontFamily="@font/opensans_regular"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/note_image"
 
