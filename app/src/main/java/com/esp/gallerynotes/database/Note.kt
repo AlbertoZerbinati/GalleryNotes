@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-//Note table
+// Note database table
 @Entity(tableName = "notes")
 data class Note(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name="id")
@@ -20,10 +20,4 @@ data class Note(
     @ColumnInfo(name="imagePath")
     var imagePath: String,
 
-
-//    @ColumnInfo(name="date")
-//    val date : String,
-//
-//    @ColumnInfo(name="color")
-//    val color : String,
 ) : Serializable

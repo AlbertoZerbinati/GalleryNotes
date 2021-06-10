@@ -2,7 +2,6 @@ package com.esp.gallerynotes.activities
 
 import android.app.Activity
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -55,6 +54,8 @@ class NoteDetailActivity : AppCompatActivity() {
                         contentResolver.openInputStream(selectedImageUri)
                     if (inputStream != null) {
                         var imageBitmap = BitmapFactory.decodeStream(inputStream)
+                        imageBitmap = Bitmap.createScaledBitmap(imageBitmap, imageBitmap.width/4, imageBitmap.height/4, false);
+
                         if(imageBitmap != null) {
                             // if there was an old image displayed (and saved as File in internal storage)
                             // we need to delete it before assigning a new one
@@ -75,7 +76,7 @@ class NoteDetailActivity : AppCompatActivity() {
                             val filename = randomStringBuilder.toString()
                             // save compressed bitmap to file
                             val baos = ByteArrayOutputStream()
-                            imageBitmap?.compress(Bitmap.CompressFormat.JPEG, 60, baos)
+                            imageBitmap?.compress(Bitmap.CompressFormat.JPEG, 80, baos)
                             applicationContext.openFileOutput(filename, Context.MODE_PRIVATE).use {
                                 it.write(baos.toByteArray())
                             }
@@ -97,10 +98,12 @@ class NoteDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_detail)
 
+        Log.e("AAA",applicationContext.fileList().size.toString())
+
         // view model for saving data in db
         noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
 
-        // note components
+        // note componentsContext
         noteTitle = findViewById(R.id.note_title)
         noteContent = findViewById(R.id.note_content)
         noteImage = findViewById(R.id.note_image)
@@ -174,17 +177,8 @@ class NoteDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun deleteImage() {
-        // set image visibility to GONE
-        noteImage.visibility = View.GONE
-        deleteImageButton.visibility = View.GONE
-        // delete image from internal storage
-        applicationContext.deleteFile(imagePath).toString()
-        // set image path=""
-        imagePath = ""
-    }
-
-    // manage screen rotation
+    // Manage screen rotation by updating the Note data in the intent this activity will read after
+    // eventual Destruction and Creation
     override fun onPause() {
         if (isUpdate) {
             // in this case we change the intent-extra from which the activity will build oldNote
@@ -198,7 +192,6 @@ class NoteDetailActivity : AppCompatActivity() {
                     imagePath
                 )
             )
-            //updateNote()
         } else {
             // in this case we have to put the created note inside the intent, so that we find it
             // as we reCreate the activity
@@ -211,9 +204,19 @@ class NoteDetailActivity : AppCompatActivity() {
                     imagePath
                 )
             )
-            //createNote()
         }
         super.onPause()
+    }
+
+    // if back arrow or back button pressed
+    override fun onBackPressed() {
+        // save notes before terminating this activity and going back to MainActivity
+        if(isUpdate)
+            updateNote()
+        else
+            createNote()
+
+        super.onBackPressed()
     }
 
     //starts pick image activity
@@ -222,17 +225,15 @@ class NoteDetailActivity : AppCompatActivity() {
         pickImageLauncherResult.launch(intent)
     }
 
-    // if back arrow or back button pressed
-    override fun onBackPressed() {
-        // save notes before terminating this activity and going back to MainActivity
-        if(isUpdate) {
-            updateNote()
-        } else {
-            createNote()
-        }
-        super.onBackPressed()
+    private fun deleteImage() {
+        // set image visibility to GONE
+        noteImage.visibility = View.GONE
+        deleteImageButton.visibility = View.GONE
+        // delete image from internal storage
+        applicationContext.deleteFile(imagePath).toString()
+        // set image path=""
+        imagePath = ""
     }
-
 
     private fun createNote() {
         // get inputs
