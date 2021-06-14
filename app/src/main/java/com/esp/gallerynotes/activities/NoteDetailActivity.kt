@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -27,7 +26,6 @@ import com.esp.gallerynotes.database.Note
 import com.esp.gallerynotes.database.NoteViewModel
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.InputStream
 import kotlin.random.Random
 
@@ -90,22 +88,16 @@ class NoteDetailActivity : AppCompatActivity() {
 
                             // Use FileProvider to create a File containing a compressed copy of the image
                             val imagesFolder = File(filesDir, "images")
-                            var uri: Uri? = null // The URI of the image copy that will be saved in internal storage
-                            try {
-                                imagesFolder.mkdirs() // Create folder
-                                val file = File(imagesFolder, "$filename.jpeg") // Create file
-                                val stream = FileOutputStream(file)
-                                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream) // (1) Write compressed JPEG to the file stream
-                                stream.flush()
-                                stream.close()
-                                uri = FileProvider.getUriForFile(this,"com.esp.fileprovider", file) // Assign the new URI
-                            } catch (e: IOException) {
-                                Log.d(
-                                    "EXC",
-                                    "IOException while trying to write file: " + e.message
-                                )
-                            }
 
+                            imagesFolder.mkdirs() // Create folder
+                            val file = File(imagesFolder, "$filename.jpeg") // Create file
+                            val stream = FileOutputStream(file)
+                            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream) // (1) Write compressed JPEG to the file stream
+                            stream.flush()
+                            stream.close()
+                            // Get the URI of the image copy that will be saved in internal storage
+                            val uri = FileProvider.getUriForFile(this,"com.esp.fileprovider", file)
+                            
                             // (2) Set imageUri for database
                             imageUri = uri.toString()
                             // (3) Show compressed image
@@ -179,12 +171,12 @@ class NoteDetailActivity : AppCompatActivity() {
             R.id.share -> shareNote()               // Share note
             R.id.delete -> {                        // Delete note
                 val alert: AlertDialog.Builder = AlertDialog.Builder(this)
-                alert.setTitle("Delete Note")
-                alert.setMessage("Are you sure you want to delete the Note?")
-                alert.setPositiveButton("Yes") { _, _ -> // confirmed note deletion
+                alert.setTitle(R.string.delete_note)
+                alert.setMessage(R.string.confirm_delete)
+                alert.setPositiveButton(R.string.yes) { _, _ -> // confirmed note deletion
                     deleteNote()
                 }
-                alert.setNegativeButton("No") { dialog, _ -> // close dialog
+                alert.setNegativeButton(R.string.no) { dialog, _ -> // close dialog
                     dialog.cancel()
                 }
                 alert.show()
@@ -219,8 +211,6 @@ class NoteDetailActivity : AppCompatActivity() {
                 )
             )
         }
-        Log.e("AAA", "PAUSE")
-
         super.onPause()
     }
 
@@ -228,7 +218,6 @@ class NoteDetailActivity : AppCompatActivity() {
     override fun onBackPressed() {
         // save notes before terminating this activity and going back to NotesListActivity
         saveNote()
-        Log.e("AAA", "BACK")
         super.onBackPressed()
     }
 

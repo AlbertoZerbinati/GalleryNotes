@@ -127,16 +127,16 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
                     // Delete note: ask confirmation before deleting from DB
                     R.id.context_menu_delete -> {
                         val alert: AlertDialog.Builder = AlertDialog.Builder(this)
-                        alert.setTitle("Delete Note")
-                        alert.setMessage("Are you sure you want to delete the Note?")
-                        alert.setPositiveButton("Yes") { _, _ -> // Confirmed note deletion
+                        alert.setTitle(getString(R.string.delete_note))
+                        alert.setMessage(getString(R.string.confirm_delete))
+                        alert.setPositiveButton(getString(R.string.yes)) { _, _ -> // Confirmed note deletion
                             // Delete the image from the internal storage
                             if (note.imageUri.isNotEmpty())
                                 applicationContext.contentResolver.delete(Uri.parse(note.imageUri),null,null)
                             // Delete the note from the DB
                             noteViewModel.delete(note)
                         }
-                        alert.setNegativeButton("No") { dialog, _ -> // Rejected note deletion
+                        alert.setNegativeButton(getString(R.string.no)) { dialog, _ -> // Rejected note deletion
                             dialog.cancel()
                         }
                         alert.show()

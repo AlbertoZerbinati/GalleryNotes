@@ -5,7 +5,6 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.room.Database
 import androidx.room.Room
@@ -33,7 +32,7 @@ abstract class NotesDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     NotesDatabase::class.java,
-                    "notes_database"
+                    context.getString(R.string.notes_database)
                 ).addCallback(WordDatabaseCallback(scope, context)) // Add a callback
                  .build()
 
@@ -65,38 +64,28 @@ abstract class NotesDatabase : RoomDatabase() {
             val res : Resources = context.applicationContext.resources
             val imageStream : InputStream = res.openRawResource(R.raw.completelogo)
             val imageBitmap = BitmapFactory.decodeStream(imageStream)
-            val filename = "___helpnoteimage___"
+            val filename = context.getString(R.string.help_note_filename)
 
-            //TODO - Should be processed in another thread
             val imagesFolder = File(context.filesDir, "images")
             var uri: Uri? = null
-            try {
-                imagesFolder.mkdirs()
-                val file = File(imagesFolder, "$filename.jpeg")
-                val stream = FileOutputStream(file)
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
-                stream.flush()
-                stream.close()
-                uri = FileProvider.getUriForFile(
-                    context,
-                    "com.esp.fileprovider",
-                    file
-                )
-            } catch (e: IOException) {
-                Log.d(
-                    "EXC",
-                    "IOException while trying to write file for sharing: " + e.message
-                )
-            }
+            
+            imagesFolder.mkdirs()
+            val file = File(imagesFolder, "$filename.jpeg")
+            val stream = FileOutputStream(file)
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
+            stream.flush()
+            stream.close()
+            uri = FileProvider.getUriForFile(
+                context,
+                "com.esp.fileprovider",
+                file
+            )
 
             // Create the Welcoming note and insert it into the DB
             val note = Note(
                 0,
-                "Welcome to GalleryNotes❕",
-                "Create and manage your Notes \uD83E\uDD29\n" +
-                        "Add Pictures to make them memorable \uD83C\uDF07\n" +
-                        "Share them with your Friends \uD83D\uDE0E\n" +
-                        "Have Fun‼️",
+                context.getString(R.string.help_note_title),
+                context.getString(R.string.help_note_content),
                 uri.toString())
             noteDao.insertNote(note)
         }

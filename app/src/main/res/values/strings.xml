@@ -4,7 +4,7 @@
     <string name="note_content">Note Content…</string>
     <string name="empty_not_saved">Empty Note not saved</string>
     <string name="add">add</string>
-    <string name="delete_image">delete image</string>
+    <string name="delete_image">Delete image</string>
     <string name="no_content_to_share">No content to share</string>
     <string name="note_image">note image</string>
     <string name="container_note_image">container note image</string>
@@ -14,5 +14,11 @@
     <string name="add_image">Add Image</string>
     <string name="share_note">Share Note</string>
     <string name="delete_note">Delete Note</string>
-
+    <string name="notes_database">notes_database</string>
+    <string name="help_note_filename">___helpnoteimage___</string>
+    <string name="help_note_title">Welcome to GalleryNotes❕</string>
+    <string name="help_note_content">Create and manage your Notes \uD83E\uDD29\nAdd Pictures to make them memorable \uD83C\uDF07\nShare them with your Friends \uD83D\uDE0E\nHave Fun‼️</string>
+    <string name="confirm_delete">Are you sure you want to delete the Note?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
