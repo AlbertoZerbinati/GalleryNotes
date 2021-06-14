@@ -1,6 +1,8 @@
 package com.esp.gallerynotes.activities
 
+import android.content.ClipData
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -105,11 +107,19 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
                         else {
                             val sendIntent: Intent = Intent().apply {
                                 action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, note.content)
                                 putExtra(Intent.EXTRA_TITLE, note.title)
+                                putExtra(Intent.EXTRA_TEXT, note.content)
                                 type = "text/plain"
                             }
-                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            if (note.imagePath.isNotBlank()) {
+                                sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(note.imagePath))
+                                sendIntent.clipData =
+                                    ClipData.newRawUri("image", Uri.parse(note.imagePath))
+                                sendIntent.type = "image/jpeg"
+                            }
+                            sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+                            val shareIntent = Intent.createChooser(sendIntent, note.title)
                             startActivity(shareIntent)
                         }
                         true
@@ -120,6 +130,8 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
                         alert.setTitle("Delete Note")
                         alert.setMessage("Are you sure you want to delete the Note?")
                         alert.setPositiveButton("Yes") { _, _ -> // Confirmed note deletion
+                            applicationContext.contentResolver.delete(Uri.parse(note.imagePath),null,null)
+
                             noteViewModel.delete(note)
                         }
                         alert.setNegativeButton("No") { dialog, _ -> // Rejected note deletion

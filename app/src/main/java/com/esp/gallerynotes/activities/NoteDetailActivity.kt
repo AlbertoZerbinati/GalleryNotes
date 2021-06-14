@@ -1,7 +1,6 @@
 package com.esp.gallerynotes.activities
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -16,11 +15,14 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import com.esp.gallerynotes.R
 import com.esp.gallerynotes.database.Note
 import com.esp.gallerynotes.database.NoteViewModel
-import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 import kotlin.random.Random
 
@@ -54,7 +56,7 @@ class NoteDetailActivity : AppCompatActivity() {
                         contentResolver.openInputStream(selectedImageUri)
                     if (inputStream != null) {
                         var imageBitmap = BitmapFactory.decodeStream(inputStream)
-                        imageBitmap = Bitmap.createScaledBitmap(imageBitmap, imageBitmap.width/4, imageBitmap.height/4, false);
+                        imageBitmap = Bitmap.createScaledBitmap(imageBitmap, imageBitmap.width/4, imageBitmap.height/4, false)
 
                         if(imageBitmap != null) {
                             // if there was an old image displayed (and saved as File in internal storage)
@@ -63,27 +65,43 @@ class NoteDetailActivity : AppCompatActivity() {
                                 deleteImage()
                             }
 
-                            // create new file into internal storage:
-                            // generate random filename (low collision probability...)
+                            // generate filename
                             val generator = Random
                             val randomStringBuilder = StringBuilder()
                             var tempChar: Char
                             for (i in 0 until 20) {
-                                tempChar = (generator.nextInt(96) + 32).toChar()
+                                tempChar = (generator.nextInt(26) + 97).toChar()
                                 if (tempChar != '/')
                                     randomStringBuilder.append(tempChar)
                             }
                             val filename = randomStringBuilder.toString()
-                            // save compressed bitmap to file
-                            val baos = ByteArrayOutputStream()
-                            imageBitmap?.compress(Bitmap.CompressFormat.JPEG, 80, baos)
-                            applicationContext.openFileOutput(filename, Context.MODE_PRIVATE).use {
-                                it.write(baos.toByteArray())
+
+                            //TODO - Should be processed in another thread
+                            val imagesFolder = File(filesDir, "images")
+                            var uri: Uri? = null
+                            try {
+                                imagesFolder.mkdirs()
+                                val file = File(imagesFolder, "$filename.jpeg")
+                                val stream = FileOutputStream(file)
+                                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream)
+                                stream.flush()
+                                stream.close()
+                                uri = FileProvider.getUriForFile(
+                                    this,
+                                    "com.esp.fileprovider",
+                                    file
+                                )
+                            } catch (e: IOException) {
+                                Log.d(
+                                    "EXC",
+                                    "IOException while trying to write file for sharing: " + e.message
+                                )
                             }
+
                             // set imagePath for database
-                            imagePath = filename
+                            imagePath = uri.toString()
                             // show compressed image
-                            noteImage.setImageBitmap(BitmapFactory.decodeByteArray(baos.toByteArray(),0,baos.size()))
+                            noteImage.setImageURI(uri)
                             //
                             noteImage.visibility = View.VISIBLE
                             deleteImageButton.visibility = View.VISIBLE
@@ -130,13 +148,8 @@ class NoteDetailActivity : AppCompatActivity() {
                 //
                 imagePath = oldNote.imagePath
                 //
-                noteImage.setImageBitmap(
-                    BitmapFactory.decodeStream(
-                        applicationContext.openFileInput(
-                            imagePath
-                        )
-                    )
-                )
+                noteImage.setImageURI(Uri.parse(imagePath))
+
                 //
                 noteImage.visibility = View.VISIBLE
                 deleteImageButton.visibility = View.VISIBLE
@@ -230,7 +243,7 @@ class NoteDetailActivity : AppCompatActivity() {
         noteImage.visibility = View.GONE
         deleteImageButton.visibility = View.GONE
         // delete image from internal storage
-        applicationContext.deleteFile(imagePath).toString()
+        applicationContext.contentResolver.delete(Uri.parse(imagePath),null,null)
         // set image path=""
         imagePath = ""
     }
@@ -249,7 +262,7 @@ class NoteDetailActivity : AppCompatActivity() {
         // otherwise create a new note with the inputs
         val id = 0
         val note = Note(id,title,content,imagePath)
-        // and save it into the db through the viewmodel
+        // and save it into the db through the ViewModel
         noteViewModel.insert(note)
     }
 
@@ -267,7 +280,7 @@ class NoteDetailActivity : AppCompatActivity() {
         // otherwise update the note with the new inputs: insert works as update because the DAO REPLACES on ID conflict
         val id : Int = oldNote.id
         val note = Note(id,title,content,imagePath)
-        // and save it into the db through the viewmodel
+        // and save it into the db through the ViewModel
         noteViewModel.insert(note)
     }
 

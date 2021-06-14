@@ -4,6 +4,10 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Log
+import android.view.View
+import androidx.core.content.FileProvider
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -12,8 +16,7 @@ import com.esp.gallerynotes.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
+import java.io.*
 import kotlin.random.Random
 
 // Database containing Note table
@@ -65,10 +68,27 @@ abstract class NotesDatabase : RoomDatabase() {
             val imageStream : InputStream = res.openRawResource(R.raw.completelogo)
             var imageBitmap = BitmapFactory.decodeStream(imageStream)
             val filename = "___helpnoteimage___"
-            val baos = ByteArrayOutputStream()
-            imageBitmap?.compress(Bitmap.CompressFormat.JPEG, 80, baos)
-            context.applicationContext.openFileOutput(filename, Context.MODE_PRIVATE).use {
-                it.write(baos.toByteArray())
+
+            //TODO - Should be processed in another thread
+            val imagesFolder = File(context.filesDir, "images")
+            var uri: Uri? = null
+            try {
+                imagesFolder.mkdirs()
+                val file = File(imagesFolder, "$filename.jpeg")
+                val stream = FileOutputStream(file)
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream)
+                stream.flush()
+                stream.close()
+                uri = FileProvider.getUriForFile(
+                    context,
+                    "com.esp.fileprovider",
+                    file
+                )
+            } catch (e: IOException) {
+                Log.d(
+                    "EXC",
+                    "IOException while trying to write file for sharing: " + e.message
+                )
             }
 
             // Create the Welcoming note and insert it into the DB
@@ -79,7 +99,7 @@ abstract class NotesDatabase : RoomDatabase() {
                         "Add Pictures to make them memorable \uD83C\uDF07\n" +
                         "Share them with your Friends \uD83D\uDE0E\n" +
                         "Have Fun‼️",
-                filename)
+                uri.toString())
             noteDao.insertNote(note)
         }
     }

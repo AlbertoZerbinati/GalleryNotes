@@ -3,8 +3,6 @@
     package="com.esp.gallerynotes" >
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
 
     <application
         android:allowBackup="true"
@@ -12,6 +10,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.esp.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity android:name="com.esp.gallerynotes.activities.NoteDetailActivity"
             android:parentActivityName="com.esp.gallerynotes.activities.NotesListActivity"
             android:theme="@style/Theme.GalleryNotes"
