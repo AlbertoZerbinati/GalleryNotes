@@ -1,3 +1,5 @@
+@file:Suppress("PrivatePropertyName")
+
 package com.esp.gallerynotes.activities
 
 import android.app.Activity
@@ -45,64 +47,69 @@ class NoteDetailActivity : AppCompatActivity() {
 
     private var imageUri : String = ""
 
-    // receive ACTION_PICK activity result
-    private var pickImageLauncherResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        // There are no request codes
-        // if everything is ok, than we can display the selected image and save its path in the imageUri variable to be saved later
+    // Receiver for ACTION_PICK activity result: the data is the selected image
+    private var pickImageLauncherResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result ->
+
+        // If result is OK, then
+        // (1) save a compressed copy of the image in internal storage
+        // (2) save its URI in the imageUri variable to be eventually saved later in the DB
+        // (3) display the compressed image
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
             if (data != null) {
-                val selectedImageUri: Uri? = data.data
+                val selectedImageUri: Uri? = data.data // The original URI of the selected image
                 if (selectedImageUri != null) {
                     val inputStream: InputStream? =
-                        contentResolver.openInputStream(selectedImageUri)
+                        contentResolver.openInputStream(selectedImageUri) // Get image stream to manipulate the Bitmap
                     if (inputStream != null) {
-                        var imageBitmap = BitmapFactory.decodeStream(inputStream)
+                        var imageBitmap = BitmapFactory.decodeStream(inputStream) // Get the Bitmap
                         if(imageBitmap != null) {
-                            imageBitmap = Bitmap.createScaledBitmap(imageBitmap, imageBitmap.width/2, imageBitmap.height/2, false)
+                            // Scale down the Bitmap size by factor of 2 for saving internal memory and faster performance when reading it later
+                            imageBitmap = Bitmap.createScaledBitmap(
+                                imageBitmap,
+                                imageBitmap.width / 2,
+                                imageBitmap.height / 2,
+                                false
+                            )
 
-                            // if there was an old image displayed (and saved as File in internal storage)
-                            // we need to delete it before assigning a new one
+                            // If there was an old image displayed ( -> saved as File in internal storage)
+                            // delete it before assigning a new one
                             if (imageUri.isNotEmpty()) {
                                 deleteImage()
                             }
 
-                            // generate random filename
+                            // Generate random 25 char long filename
                             val generator = Random
                             val randomStringBuilder = StringBuilder()
-                            for (i in 0 until 20) {
-                                var tempChar: Char = (generator.nextInt(26) + 97).toChar()
+                            for (i in 0 until 25) {
+                                val tempChar: Char = (generator.nextInt(26) + 97).toChar() // Only lowercase letters
                                 randomStringBuilder.append(tempChar)
                             }
                             val filename = randomStringBuilder.toString()
 
-                            //TODO - Should be processed in another thread
+                            // Use FileProvider to create a File containing a compressed copy of the image
                             val imagesFolder = File(filesDir, "images")
-                            var uri: Uri? = null
+                            var uri: Uri? = null // The URI of the image copy that will be saved in internal storage
                             try {
-                                imagesFolder.mkdirs()
-                                val file = File(imagesFolder, "$filename.jpeg")
+                                imagesFolder.mkdirs() // Create folder
+                                val file = File(imagesFolder, "$filename.jpeg") // Create file
                                 val stream = FileOutputStream(file)
-                                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
+                                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream) // (1) Write compressed JPEG to the file stream
                                 stream.flush()
                                 stream.close()
-                                uri = FileProvider.getUriForFile(
-                                    this,
-                                    "com.esp.fileprovider",
-                                    file
-                                )
+                                uri = FileProvider.getUriForFile(this,"com.esp.fileprovider", file) // Assign the new URI
                             } catch (e: IOException) {
                                 Log.d(
                                     "EXC",
-                                    "IOException while trying to write file for sharing: " + e.message
+                                    "IOException while trying to write file: " + e.message
                                 )
                             }
 
-                            // set imageUri for database
+                            // (2) Set imageUri for database
                             imageUri = uri.toString()
-                            // show compressed image
+                            // (3) Show compressed image
                             noteImage.setImageURI(uri)
-                            //
                             noteImage.visibility = View.VISIBLE
                             deleteImageButton.visibility = View.VISIBLE
                         }
@@ -167,9 +174,10 @@ class NoteDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Detect the chosen action
         when(item.itemId) {
-            R.id.add_image -> selectImage() // add or replace image
-            R.id.share -> shareNote()       // share note
-            R.id.delete -> {                // delete note
+            android.R.id.home -> onBackPressed()    // Actionbar back button
+            R.id.add_image -> selectImage()         // Add or replace image
+            R.id.share -> shareNote()               // Share note
+            R.id.delete -> {                        // Delete note
                 val alert: AlertDialog.Builder = AlertDialog.Builder(this)
                 alert.setTitle("Delete Note")
                 alert.setMessage("Are you sure you want to delete the Note?")
@@ -211,6 +219,8 @@ class NoteDetailActivity : AppCompatActivity() {
                 )
             )
         }
+        Log.e("AAA", "PAUSE")
+
         super.onPause()
     }
 
@@ -218,6 +228,7 @@ class NoteDetailActivity : AppCompatActivity() {
     override fun onBackPressed() {
         // save notes before terminating this activity and going back to NotesListActivity
         saveNote()
+        Log.e("AAA", "BACK")
         super.onBackPressed()
     }
 
@@ -234,11 +245,51 @@ class NoteDetailActivity : AppCompatActivity() {
         deleteImageButton.visibility = View.GONE
 
         // Delete image from internal storage
-        if (imageUri.isNotBlank()) {
+        if (imageUri.isNotEmpty()) {
             applicationContext.contentResolver.delete(Uri.parse(imageUri), null, null)
             // Empty image path
             imageUri = ""
         }
+    }
+
+    // Share Note through ACTION_SEND Intent
+    private fun shareNote() {
+        // If there is no content to share return
+        if (noteContent.text.toString().trim().isEmpty()) {
+            Toast.makeText(this, getString(R.string.no_content_to_share), Toast.LENGTH_SHORT).show()
+            return
+        }
+        // Otherwise start a SEND intent with note.content as text
+        // and note.title as title. Also eventually add image.
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TITLE, noteTitle.text)
+            putExtra(Intent.EXTRA_TEXT, noteContent.text)
+            type = "text/plain" // Default text/plain SEND_INTENT
+        }
+        if (imageUri.isNotEmpty()) {
+            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(imageUri))
+            sendIntent.clipData =
+                ClipData.newRawUri("image", Uri.parse(imageUri))
+            sendIntent.type = "image/jpeg"  // Becomes an image/jpeg SEND_INTENT
+        }
+        sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        // Start intent
+        val shareIntent = Intent.createChooser(sendIntent, noteTitle.text)
+        startActivity(shareIntent)
+    }
+
+    // Delete Note from DB
+    private fun deleteNote() {
+        // If there is an oldNote in the DB, that's the one to delete
+        if (::oldNote.isInitialized)
+            noteViewModel.delete(oldNote)
+
+
+        // Then (eventually) delete the inserted image file and finish this activity
+        deleteImage()
+        finish() // doesn't trigger onBackPressed(), so doesn't save the Note
     }
 
     // Create or Update a Note in the DB
@@ -256,52 +307,13 @@ class NoteDetailActivity : AppCompatActivity() {
 
         // Decide whether to update an existing note or create a new one:
         // this works thanks to the fact that the DAO REPLACES on ID conflict
-        val id : Int
-        if (isUpdate)
-            id = oldNote.id
-        else
-            id = 0
+        val id : Int = if(isUpdate) oldNote.id else 0
 
         // Create a new Note with the inputs (imageUri was set after an image was selected from gallery)
         val note = Note(id,title,content,imageUri)
 
         // Save Note into the DB through the ViewModel
         noteViewModel.insert(note)
-    }
-
-    private fun shareNote() {
-        // if there is no content to share return
-        if (noteContent.text.toString().trim().isEmpty()) {
-            Toast.makeText(this, getString(R.string.no_content_to_share), Toast.LENGTH_SHORT).show()
-            return
-        }
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TITLE, noteTitle.text)
-            putExtra(Intent.EXTRA_TEXT, noteContent.text)
-            type = "text/plain"
-        }
-        if (imageUri.isNotBlank()) {
-            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(imageUri))
-            sendIntent.clipData =
-                ClipData.newRawUri("image", Uri.parse(imageUri))
-            sendIntent.type = "image/jpeg"
-        }
-        sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-        val shareIntent = Intent.createChooser(sendIntent, noteTitle.text)
-        startActivity(shareIntent)
-    }
-
-    private fun deleteNote() {
-        // if there is an oldNote in the DB then we delete it
-        if (::oldNote.isInitialized) {
-            noteViewModel.delete(oldNote)
-        }
-
-        // and then we (eventually) delete the inserted image file and finish this activity
-        deleteImage()
-        finish() // doesn't trigger onBackPressed(), so don't create/update the note
     }
 }
 

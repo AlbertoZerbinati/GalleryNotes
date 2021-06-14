@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
-        android:contentDescription="container_note_image"
+        android:contentDescription="@string/container_note_image"
         android:visibility="gone"
         android:adjustViewBounds="true"/>
 
@@ -38,7 +38,6 @@
         android:fontFamily="@font/opensans_regular"
         android:textColor="@color/white"
         android:textSize="14sp"
-
         android:visibility="gone"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

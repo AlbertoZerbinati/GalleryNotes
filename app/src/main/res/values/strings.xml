@@ -1,13 +1,18 @@
 <resources>
     <string name="app_name">GalleryNotes</string>
-    <string name="my_gallery_notes">My Gallery Notes</string>
     <string name="note_title">Note Title</string>
-    <string name="note_content">Note Content...</string>
+    <string name="note_content">Note Content…</string>
     <string name="empty_not_saved">Empty Note not saved</string>
-    <string name="back">back</string>
     <string name="add">add</string>
-    <string name="no_picker">No image picker available</string>
     <string name="delete_image">delete image</string>
     <string name="no_content_to_share">No content to share</string>
+    <string name="note_image">note image</string>
+    <string name="container_note_image">container note image</string>
+    <string name="edit">Edit</string>
+    <string name="share">Share</string>
+    <string name="delete">Delete</string>
+    <string name="add_image">Add Image</string>
+    <string name="share_note">Share Note</string>
+    <string name="delete_note">Delete Note</string>
 
 </resources>

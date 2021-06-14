@@ -62,9 +62,9 @@ abstract class NotesDatabase : RoomDatabase() {
         // Populate the database in a new coroutine with a Welcoming Note
         fun populateDatabase(noteDao: NoteDao, context: Context) {
             // Get note image from res/raw, compress it, save to internal storage.
-            val res : Resources = context.applicationContext.resources;
+            val res : Resources = context.applicationContext.resources
             val imageStream : InputStream = res.openRawResource(R.raw.completelogo)
-            var imageBitmap = BitmapFactory.decodeStream(imageStream)
+            val imageBitmap = BitmapFactory.decodeStream(imageStream)
             val filename = "___helpnoteimage___"
 
             //TODO - Should be processed in another thread

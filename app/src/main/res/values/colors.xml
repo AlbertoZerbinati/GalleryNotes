@@ -2,14 +2,9 @@
 <resources>
     <color name="coral">#FF7F50</color>
     <color name="tomato">#FF6347</color>
-    <color name="orange">#FFA500</color>
     <color name="columbia_blue">#B8D8D8</color>
-    <color name="weldon_blue">#7A9E9F</color>
     <color name="stormcloud">#2B6673</color>
-    <color name="deep_nigth">#17283A</color>
     <color name="sunset_orange">#FE5F55</color>
-    <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="icons">#666666</color>
     <color name="red">#E71607</color>
 </resources>

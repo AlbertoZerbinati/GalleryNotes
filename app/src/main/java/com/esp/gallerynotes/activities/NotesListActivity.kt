@@ -1,3 +1,5 @@
+@file:Suppress("PrivatePropertyName")
+
 package com.esp.gallerynotes.activities
 
 import android.content.ClipData
@@ -37,7 +39,7 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
         recyclerView.adapter = adapter
         recyclerView.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-       recyclerView.setItemViewCacheSize(20);
+       recyclerView.setItemViewCacheSize(20)
 
         // Get a new or existing ViewModel from the ViewModelProvider
         noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
@@ -109,7 +111,7 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
                                 putExtra(Intent.EXTRA_TEXT, note.content)
                                 type = "text/plain" // Default text/plain SEND_INTENT
                             }
-                            if (note.imageUri.isNotBlank()) {
+                            if (note.imageUri.isNotEmpty()) {
                                 sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(note.imageUri))
                                 sendIntent.clipData =
                                     ClipData.newRawUri("image", Uri.parse(note.imageUri))
