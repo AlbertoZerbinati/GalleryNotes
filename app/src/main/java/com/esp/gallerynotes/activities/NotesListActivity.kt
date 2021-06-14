@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -38,8 +37,7 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
         recyclerView.adapter = adapter
         recyclerView.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-
-        recyclerView.setItemViewCacheSize(50);
+       recyclerView.setItemViewCacheSize(20);
 
         // Get a new or existing ViewModel from the ViewModelProvider
         noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
@@ -74,7 +72,7 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
         }
     }
 
-    // When a note is long clicked make the PopupMenu appear
+    // When a note is long clicked show the PopupMenu
     override fun onNoteLongClicked(note: Note, v: View) {
         val popupMenu = PopupMenu(v.context, v)
 
@@ -102,22 +100,22 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                        // otherwise start a SEND intent with note.content as text
-                        // and note.title as title
+                        // Otherwise start a SEND intent with note.content as text
+                        // and note.title as title. Also eventually add image.
                         else {
                             val sendIntent: Intent = Intent().apply {
                                 action = Intent.ACTION_SEND
                                 putExtra(Intent.EXTRA_TITLE, note.title)
                                 putExtra(Intent.EXTRA_TEXT, note.content)
-                                type = "text/plain"
+                                type = "text/plain" // Default text/plain SEND_INTENT
                             }
-                            if (note.imagePath.isNotBlank()) {
-                                sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(note.imagePath))
+                            if (note.imageUri.isNotBlank()) {
+                                sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(note.imageUri))
                                 sendIntent.clipData =
-                                    ClipData.newRawUri("image", Uri.parse(note.imagePath))
-                                sendIntent.type = "image/jpeg"
+                                    ClipData.newRawUri("image", Uri.parse(note.imageUri))
+                                sendIntent.type = "image/jpeg"  // Becomes an image/jpeg SEND_INTENT
                             }
-                            sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // Grant image read permission
 
                             val shareIntent = Intent.createChooser(sendIntent, note.title)
                             startActivity(shareIntent)
@@ -130,8 +128,10 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
                         alert.setTitle("Delete Note")
                         alert.setMessage("Are you sure you want to delete the Note?")
                         alert.setPositiveButton("Yes") { _, _ -> // Confirmed note deletion
-                            applicationContext.contentResolver.delete(Uri.parse(note.imagePath),null,null)
-
+                            // Delete the image from the internal storage
+                            if (note.imageUri.isNotEmpty())
+                                applicationContext.contentResolver.delete(Uri.parse(note.imageUri),null,null)
+                            // Delete the note from the DB
                             noteViewModel.delete(note)
                         }
                         alert.setNegativeButton("No") { dialog, _ -> // Rejected note deletion

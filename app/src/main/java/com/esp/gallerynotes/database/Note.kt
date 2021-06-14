@@ -17,7 +17,7 @@ data class Note(
     @ColumnInfo(name="content")
     var content: String,
 
-    @ColumnInfo(name="imagePath")
-    var imagePath: String,
+    @ColumnInfo(name="imageUri")
+    var imageUri: String,
 
-) : Serializable
+    ) : Serializable

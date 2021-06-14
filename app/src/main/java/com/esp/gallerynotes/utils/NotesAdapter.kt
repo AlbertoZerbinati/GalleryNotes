@@ -1,20 +1,15 @@
 package com.esp.gallerynotes.utils
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.FileProvider
-import androidx.core.content.FileProvider.getUriForFile
 import androidx.recyclerview.widget.RecyclerView
 import com.esp.gallerynotes.R
 import com.esp.gallerynotes.database.Note
-import java.io.File
 
 class NotesAdapter(var context: Context, notesListenerParam: NotesListener) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
 
@@ -56,10 +51,8 @@ class NotesAdapter(var context: Context, notesListenerParam: NotesListener) : Re
             holder.noteContentView.visibility = View.VISIBLE
         }
         // Image
-        if(current.imagePath.isNotBlank()) {
-            val options = BitmapFactory.Options()
-            options.inSampleSize = 3
-            holder.noteImageView.setImageURI(Uri.parse(current.imagePath))
+        if(current.imageUri.isNotBlank()) {
+            holder.noteImageView.setImageURI(Uri.parse(current.imageUri))
             holder.noteImageView.visibility = View.VISIBLE
         }
 

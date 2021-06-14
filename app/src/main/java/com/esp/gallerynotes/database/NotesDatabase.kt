@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
-import android.view.View
 import androidx.core.content.FileProvider
 import androidx.room.Database
 import androidx.room.Room
@@ -17,7 +16,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.*
-import kotlin.random.Random
 
 // Database containing Note table
 @Database(entities=[Note::class],version=1)
@@ -40,7 +38,7 @@ abstract class NotesDatabase : RoomDatabase() {
                  .build()
 
                 INSTANCE = instance
-                // return instance
+                // Return instance
                 instance
             }
         }
@@ -50,7 +48,7 @@ abstract class NotesDatabase : RoomDatabase() {
             private val scope: CoroutineScope,
             var context: Context
         ) : RoomDatabase.Callback() {
-            // Override the onCreate method: populate the database only after app installation or storage clear
+            // Override the onCreate method: populate the database only after app installation or app-storage clear
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 INSTANCE?.let { database ->
@@ -76,7 +74,7 @@ abstract class NotesDatabase : RoomDatabase() {
                 imagesFolder.mkdirs()
                 val file = File(imagesFolder, "$filename.jpeg")
                 val stream = FileOutputStream(file)
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream)
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
                 stream.flush()
                 stream.close()
                 uri = FileProvider.getUriForFile(

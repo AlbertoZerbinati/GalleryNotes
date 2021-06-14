@@ -1,6 +1,5 @@
 package com.esp.gallerynotes.utils
 
-import android.view.ContextMenu
 import android.view.View
 import com.esp.gallerynotes.database.Note
 
