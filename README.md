@@ -7,8 +7,10 @@ GalleryNotes is an android app that allows user to create text notes and link th
 - Fast and responsive user interaction
 
 ## Screenshots
-![Notes List](screenshots/screenshot_list.jpg "Notes List") 
-![Note Detail](screenshots/screenshot_list.jpg "Note Detail") 
+<p>
+<img src="screenshots/screenshot_list.jpg" width="450" height="975">
+<img src="screenshots/screenshot_detail.jpg" width="450" height="975">
+</p>
 
 ----------- 
 Embedded System Programming 2020/21, Unipd, 6 cfu exam.
