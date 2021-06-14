@@ -8,8 +8,13 @@ GalleryNotes is an android app that allows user to create text notes and link th
 
 ## Screenshots
 <p>
-<img src="screenshots/screenshot_list.jpg" width="450" height="975">
-<img src="screenshots/screenshot_detail.jpg" width="450" height="975">
+<img src="screenshots/screenshot_list.jpg" width="350" height="758">
+<img src="screenshots/screenshot_detail.jpg" width="350" height="758">
+</p>
+
+## App design schema
+<p>
+<img src="GalleryNotes app schema.png" width="700" height="800">
 </p>
 
 ----------- 
