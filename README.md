@@ -18,4 +18,6 @@ GalleryNotes is an android app that allows user to create text notes and link th
 </p>
 
 ----------- 
-Embedded System Programming 2020/21, Unipd, 6 cfu exam.
+_App testata su Google Pixel 5, Android 11_
+
+*Embedded System Programming 2020/21, Unipd, 6 cfu exam.*
