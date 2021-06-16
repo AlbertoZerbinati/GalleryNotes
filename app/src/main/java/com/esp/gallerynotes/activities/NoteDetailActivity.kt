@@ -27,6 +27,7 @@ import com.esp.gallerynotes.database.NoteViewModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.io.Serializable
 import kotlin.random.Random
 
 
@@ -130,13 +131,11 @@ class NoteDetailActivity : AppCompatActivity() {
         }
 
         // If it is an UPDATE call we take note of that
-        if (intent.getIntExtra("requestCode",-1) == RC_UPDATE_NOTE) {
-            isUpdate = true
-        }
         // The incoming intent will always contain a "note" Extra if this is an UPDATE call.
         // Also ADD calls might have a "note" Extra for example when this activity is recreated
         // after a screen rotation (because we modify the intent in the onPause() method)
-        if (intent.hasExtra("note")) {
+        if (intent.getIntExtra("requestCode",-100) == RC_UPDATE_NOTE) {
+            isUpdate = true
             // Get the old note parameters
             oldNote = intent.getSerializableExtra("note") as Note
 
@@ -152,7 +151,30 @@ class NoteDetailActivity : AppCompatActivity() {
                 noteImage.visibility = View.VISIBLE
                 deleteImageButton.visibility = View.VISIBLE
             }
+
+            // Remove the Extra so that after screen rotation this activity doesn't execute code inside this if
+            intent.removeExtra("requestCode")
         }
+
+        // After screen rotation recover the note that was being written
+        val recoveredNote : Note? = savedInstanceState?.getSerializable("note") as Note?
+        if (recoveredNote != null) {
+            isUpdate = true
+            oldNote = recoveredNote // Set oldNote = recoveredNote so that this note is saved appropriately
+
+            // Set views fields
+            noteTitle.setText(recoveredNote.title)
+            noteContent.setText(recoveredNote.content)
+
+            // Set imageUri and eventually populate the imageView
+            imageUri = recoveredNote.imageUri
+            if (imageUri.isNotEmpty()) {
+                noteImage.setImageURI(Uri.parse(imageUri))
+                noteImage.visibility = View.VISIBLE
+                deleteImageButton.visibility = View.VISIBLE
+            }
+        }
+
         supportActionBar?.setDisplayShowTitleEnabled(false) // Remove title from ActionBar
     }
 
@@ -185,33 +207,19 @@ class NoteDetailActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    // Manage screen rotation by updating the Note data in the intent this activity will read after
-    // eventual Destruction and reCreation
-    override fun onPause() {
-        if (isUpdate) {
-            // In this case we change the intent-extra from which the activity will build oldNote
-            intent.removeExtra("note")
-            intent.putExtra("note",
-                Note(
-                    oldNote.id,
-                    noteTitle.text.toString().trim(),
-                    noteContent.text.toString().trim(),
-                    imageUri
-                )
-            )
-        } else {
-            // In this case we have to put the created note inside the intent, so that we find it
-            // as we reCreate the activity
-            intent.putExtra("note",
-                Note(
-                    0,
-                    noteTitle.text.toString().trim(),
-                    noteContent.text.toString().trim(),
-                    imageUri
-                )
-            )
-        }
-        super.onPause()
+    // On screen rotation save the INSTANCE STATE:
+    // textViews do so automatically but ImageView doesn't, so override this method
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        // Set all Note fields and build the Note with that
+        val title = noteTitle.text.toString().trim()
+        val content = noteContent.text.toString().trim()
+        val id : Int = if(isUpdate) oldNote.id else 0
+        val recoveredNote = Note(id,title,content,imageUri)
+
+        // Save in Instance State
+        savedInstanceState.putSerializable("note", recoveredNote as Serializable)
+
+        super.onSaveInstanceState(savedInstanceState)
     }
 
     // If back arrow or back button is pressed
