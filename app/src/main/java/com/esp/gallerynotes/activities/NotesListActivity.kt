@@ -39,7 +39,7 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
         recyclerView.adapter = adapter
         recyclerView.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-       recyclerView.setItemViewCacheSize(20)
+//       recyclerView.setItemViewCacheSize(20)
 
         // Get a new or existing ViewModel from the ViewModelProvider
         noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)

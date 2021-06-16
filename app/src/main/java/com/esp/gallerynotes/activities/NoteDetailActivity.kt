@@ -224,7 +224,7 @@ class NoteDetailActivity : AppCompatActivity() {
 
     // If back arrow or back button is pressed
     override fun onBackPressed() {
-        // save notes before terminating this activity and going back to NotesListActivity
+        // Save Note before terminating this activity and going back to NotesListActivity
         saveNote()
         super.onBackPressed()
     }
@@ -260,8 +260,8 @@ class NoteDetailActivity : AppCompatActivity() {
         // and note.title as title. Also eventually add image.
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TITLE, noteTitle.text)
-            putExtra(Intent.EXTRA_TEXT, noteContent.text)
+            putExtra(Intent.EXTRA_TITLE, noteTitle.text.toString())
+            putExtra(Intent.EXTRA_TEXT, noteContent.text.toString())
             type = "text/plain" // Default text/plain SEND_INTENT
         }
         if (imageUri.isNotEmpty()) {
@@ -283,7 +283,6 @@ class NoteDetailActivity : AppCompatActivity() {
         if (::oldNote.isInitialized)
             noteViewModel.delete(oldNote)
 
-
         // Then (eventually) delete the inserted image file and finish this activity
         deleteImage()
         finish() // doesn't trigger onBackPressed(), so doesn't save the Note
@@ -298,7 +297,12 @@ class NoteDetailActivity : AppCompatActivity() {
         // If empty note than don't save it
         if (title.isEmpty() && content.isEmpty()) {
             Toast.makeText(this, getString(R.string.empty_not_saved), Toast.LENGTH_SHORT).show()
-            deleteImage() // Also delete eventual image saved in internal storage in order not to leak memory
+
+            // Also delete eventual image saved in internal storage in order not to leak memory
+            // but do so only if this is a Note creation, in order not to delete the oldNote image
+            if (!isUpdate)
+                deleteImage()
+
             return
         }
 
