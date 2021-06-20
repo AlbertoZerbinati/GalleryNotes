@@ -130,48 +130,52 @@ class NoteDetailActivity : AppCompatActivity() {
             deleteImage()
         }
 
-        // If it is an UPDATE call we take note of that
-        // The incoming intent will always contain a "note" Extra if this is an UPDATE call.
-        // Also ADD calls might have a "note" Extra for example when this activity is recreated
-        // after a screen rotation (because we modify the intent in the onPause() method)
-        if (intent.getIntExtra("requestCode",-100) == RC_UPDATE_NOTE) {
-            isUpdate = true
-            // Get the old note parameters
-            oldNote = intent.getSerializableExtra("note") as Note
+        // Check if there is a savedInstanceState:
+        // after screen rotation recover the note that was being written
+        if (savedInstanceState != null) {
+            val recoveredNote: Note? = savedInstanceState.getSerializable("note") as Note?
+            if (recoveredNote != null) {
+                isUpdate = recoveredNote.id != 0 // Check if it is update
+                oldNote =
+                    recoveredNote // Set oldNote = recoveredNote so that this note is saved appropriately
 
-            // Populate views with oldNote content
-            noteTitle.setText(oldNote.title)
-            noteContent.setText(oldNote.content)
+                // Set views fields
+                noteTitle.setText(recoveredNote.title)
+                noteContent.setText(recoveredNote.content)
 
-            // noteImage is only populated if there is an image in oldNote to show
-            if (oldNote.imageUri.isNotEmpty()) {
-                // Set image via URI and adjust visibility
-                imageUri = oldNote.imageUri
-                noteImage.setImageURI(Uri.parse(imageUri))
-                noteImage.visibility = View.VISIBLE
-                deleteImageButton.visibility = View.VISIBLE
+                // Set imageUri and eventually populate the imageView
+                imageUri = recoveredNote.imageUri
+                if (imageUri.isNotEmpty()) {
+                    noteImage.setImageURI(Uri.parse(imageUri))
+                    noteImage.visibility = View.VISIBLE
+                    deleteImageButton.visibility = View.VISIBLE
+                }
             }
-
-            // Remove the Extra so that after screen rotation this activity doesn't execute code inside this if
-            intent.removeExtra("requestCode")
         }
+        else {  // Otherwise this is a fresh call to NoteDetailActivity:
+                // check if it is an update or create call
 
-        // After screen rotation recover the note that was being written
-        val recoveredNote : Note? = savedInstanceState?.getSerializable("note") as Note?
-        if (recoveredNote != null) {
-            isUpdate = true
-            oldNote = recoveredNote // Set oldNote = recoveredNote so that this note is saved appropriately
+            if (intent.getIntExtra("requestCode", -100) == RC_UPDATE_NOTE) {
+                isUpdate = true // If it is an UPDATE call then take note of that.
 
-            // Set views fields
-            noteTitle.setText(recoveredNote.title)
-            noteContent.setText(recoveredNote.content)
+                // Get the old note parameters
+                oldNote = intent.getSerializableExtra("note") as Note
 
-            // Set imageUri and eventually populate the imageView
-            imageUri = recoveredNote.imageUri
-            if (imageUri.isNotEmpty()) {
-                noteImage.setImageURI(Uri.parse(imageUri))
-                noteImage.visibility = View.VISIBLE
-                deleteImageButton.visibility = View.VISIBLE
+                // Populate views with oldNote content
+                noteTitle.setText(oldNote.title)
+                noteContent.setText(oldNote.content)
+
+                // noteImage is only populated if there is an image in oldNote to show
+                if (oldNote.imageUri.isNotEmpty()) {
+                    // Set image via URI and adjust visibility
+                    imageUri = oldNote.imageUri
+                    noteImage.setImageURI(Uri.parse(imageUri))
+                    noteImage.visibility = View.VISIBLE
+                    deleteImageButton.visibility = View.VISIBLE
+                }
+
+                // Remove the Extra so that after screen rotation this activity doesn't execute code inside this if
+                intent.removeExtra("requestCode")
             }
         }
 
