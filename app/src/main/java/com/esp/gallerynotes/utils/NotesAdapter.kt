@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.esp.gallerynotes.R
 import com.esp.gallerynotes.database.Note
 
+/*
+ * Adapter for Notes RecyclerView
+ */
 class NotesAdapter(var context: Context, notesListenerParam: NotesListener) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)

@@ -3,7 +3,9 @@ package com.esp.gallerynotes.database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
-// Contains Data-accessing methods (queries)
+/*
+ * Dao contains Data-accessing methods (queries) for database
+ */
 @Dao
 interface NoteDao {
     @Query("SELECT * FROM notes ORDER BY id DESC") // DESC ORDER: later added notes appear first

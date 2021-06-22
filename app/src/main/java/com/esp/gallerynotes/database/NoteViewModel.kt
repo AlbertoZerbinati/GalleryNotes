@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-// ViewModel role is to provide data for the UI and survive configuration changes (ex. screen orientation, language, ...)
+/*
+ * ViewModel role is to provide data for the UI and survive configuration changes (ex. screen orientation, language, ...)
+ */
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: NoteRepository

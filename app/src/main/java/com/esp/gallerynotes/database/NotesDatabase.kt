@@ -16,7 +16,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.*
 
-// Database containing Note table
+/*
+ * Database containing Note table
+ */
 @Database(entities=[Note::class],version=1)
 abstract class NotesDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao

@@ -21,7 +21,12 @@ import com.esp.gallerynotes.utils.NotesAdapter
 import com.esp.gallerynotes.utils.NotesListener
 import java.io.Serializable
 
-
+/*
+ * NotesListActivity shows all the Notes in a RecyclerView.
+ * Allows to create new Notes through the FloatingActionButton
+ * Allows to edit a Note by clicking on it
+ * Allows to edit, share or delete a Note on long click
+ */
 class NotesListActivity : AppCompatActivity(), NotesListener {
     // Request codes
     private val RC_ADD_NOTE: Int = 1
@@ -39,7 +44,6 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
         recyclerView.adapter = adapter
         recyclerView.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-//       recyclerView.setItemViewCacheSize(20)
 
         // Get a new or existing ViewModel from the ViewModelProvider
         noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)

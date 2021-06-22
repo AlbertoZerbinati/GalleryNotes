@@ -30,7 +30,14 @@ import java.io.InputStream
 import java.io.Serializable
 import kotlin.random.Random
 
-
+/*
+ * NoteDetailActivity show an interface for Note creation and editing
+ * Allows to add/edit Title, Content and an Image to the Note
+ * Manages the image as a file, storing and deleting it from internal storage
+ * Also allows to share and delete a Note
+ * The Note is automatically saved when back button is pressed and the instance state is automatically
+ *  saved in order to grant coherent experience on device configuration changes (ex. screen rotation)
+ */
 class NoteDetailActivity : AppCompatActivity() {
     private val RC_UPDATE_NOTE : Int = 2
 
@@ -192,7 +199,7 @@ class NoteDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Detect the chosen action
         when(item.itemId) {
-            android.R.id.home -> onBackPressed()    // Actionbar back button
+            android.R.id.home -> onBackPressed()    // Save Note and finish
             R.id.add_image -> selectImage()         // Add or replace image
             R.id.share -> shareNote()               // Share note
             R.id.delete -> {                        // Delete note
@@ -211,7 +218,7 @@ class NoteDetailActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    // On screen rotation save the INSTANCE STATE:
+    // Save the INSTANCE STATE:
     // textViews do so automatically but ImageView doesn't, so override this method
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         // Set all Note fields and build the Note with that
