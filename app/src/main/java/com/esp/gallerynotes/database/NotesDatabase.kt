@@ -88,7 +88,9 @@ abstract class NotesDatabase : RoomDatabase() {
                 0,
                 context.getString(R.string.help_note_title),
                 context.getString(R.string.help_note_content),
-                uri.toString())
+                uri.toString(),
+                false
+            )
             noteDao.insertNote(note)
         }
     }

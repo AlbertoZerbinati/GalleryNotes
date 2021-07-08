@@ -6,11 +6,17 @@ import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -19,6 +25,7 @@ import com.esp.gallerynotes.database.Note
 import com.esp.gallerynotes.database.NoteViewModel
 import com.esp.gallerynotes.utils.NotesAdapter
 import com.esp.gallerynotes.utils.NotesListener
+import com.google.android.material.navigation.NavigationView
 import java.io.Serializable
 
 /*
@@ -27,16 +34,29 @@ import java.io.Serializable
  * Allows to edit a Note by clicking on it
  * Allows to edit, share or delete a Note on long click
  */
-class NotesListActivity : AppCompatActivity(), NotesListener {
+class NotesListActivity : AppCompatActivity(), NotesListener, NavigationView.OnNavigationItemSelectedListener {
     // Request codes
     private val RC_ADD_NOTE: Int = 1
     private val RC_UPDATE_NOTE: Int = 2
 
     private lateinit var noteViewModel: NoteViewModel
 
+    private lateinit var drawerLayout : DrawerLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notes_list)
+
+        // Setup navigation drawer
+        drawerLayout = findViewById(R.id.drawer)
+        val navView : NavigationView = findViewById(R.id.nav_view)
+        navView.setNavigationItemSelectedListener(this)
+        val abdToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+
+        drawerLayout.addDrawerListener(abdToggle)
+        abdToggle.isDrawerIndicatorEnabled = true
+        abdToggle.isDrawerSlideAnimationEnabled = true
+        abdToggle.syncState()
 
         // Setup recycler view
         val recyclerView = findViewById<RecyclerView>(R.id.notesRV)
@@ -55,7 +75,11 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
             this,
             { notes ->
                 // Update the cached copy of notes in the adapter
-                notes?.let { adapter.setNotes(it) }
+                notes?.let {
+                    adapter.setNotes(it.filter {
+                        !it.deleted // Only show the not-deleted Notes
+                    })
+                }
             }
         )
 
@@ -66,6 +90,24 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
             intent.putExtra("requestCode", RC_ADD_NOTE)
             startActivity(intent)
         }
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            android.R.id.home -> {
+                if(!drawerLayout.isDrawerOpen(Gravity.LEFT))
+                    drawerLayout.openDrawer(Gravity.LEFT)
+                else
+                    drawerLayout.closeDrawer(Gravity.LEFT)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     // When a note is clicked start NoteDetailActivity for Note Update
@@ -134,11 +176,19 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
                         alert.setTitle(getString(R.string.delete_note))
                         alert.setMessage(getString(R.string.confirm_delete))
                         alert.setPositiveButton(getString(R.string.yes)) { _, _ -> // Confirmed note deletion
+
+                            /*
                             // Delete the image from the internal storage
                             if (note.imageUri.isNotEmpty())
                                 applicationContext.contentResolver.delete(Uri.parse(note.imageUri),null,null)
                             // Delete the note from the DB
                             noteViewModel.delete(note)
+                             */
+
+                            // Set the Note as deleted
+                            note.deleted = true
+                            // And update the instance in the database
+                            noteViewModel.insert(note)
                         }
                         alert.setNegativeButton(getString(R.string.no)) { dialog, _ -> // Rejected note deletion
                             dialog.cancel()
@@ -151,5 +201,17 @@ class NotesListActivity : AppCompatActivity(), NotesListener {
             }
         popupMenu.inflate(R.menu.note_context_menu)
         popupMenu.show()
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.bin -> {
+                val intent = Intent(applicationContext, DeletedNotesListActivity::class.java)
+                with(intent) {
+                    startActivity(this)
+                }
+            }
+        }
+        return false
     }
 }

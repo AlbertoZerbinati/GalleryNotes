@@ -180,9 +180,6 @@ class NoteDetailActivity : AppCompatActivity() {
                     noteImage.visibility = View.VISIBLE
                     deleteImageButton.visibility = View.VISIBLE
                 }
-
-                // Remove the Extra so that after screen rotation this activity doesn't execute code inside this if
-                intent.removeExtra("requestCode")
             }
         }
 
@@ -225,7 +222,7 @@ class NoteDetailActivity : AppCompatActivity() {
         val title = noteTitle.text.toString().trim()
         val content = noteContent.text.toString().trim()
         val id : Int = if(isUpdate) oldNote.id else 0
-        val recoveredNote = Note(id,title,content,imageUri)
+        val recoveredNote = Note(id,title,content,imageUri,oldNote.deleted)
 
         // Save in Instance State
         savedInstanceState.putSerializable("note", recoveredNote as Serializable)
@@ -290,13 +287,33 @@ class NoteDetailActivity : AppCompatActivity() {
 
     // Delete Note from DB
     private fun deleteNote() {
+        /*
         // If there is an oldNote in the DB, that's the one to delete
         if (::oldNote.isInitialized)
             noteViewModel.delete(oldNote)
 
         // Then (eventually) delete the inserted image file and finish this activity
         deleteImage()
-        finish() // doesn't trigger onBackPressed(), so doesn't save the Note
+         */
+
+        val title = noteTitle.text.toString().trim()
+        val content = noteContent.text.toString().trim()
+
+        if (title.isEmpty() && content.isEmpty())
+            finish()
+        else {
+            val note: Note
+
+            if (isUpdate)
+                note = Note(oldNote.id, title, content, imageUri, true)
+            else
+                note = Note(0, title, content, imageUri, true)
+
+            // insert the Note in the database in the deleted table
+            noteViewModel.insert(note)
+
+            finish() // doesn't trigger onBackPressed(), so doesn't save the Note
+        }
     }
 
     // Create or Update a Note in the DB
@@ -322,7 +339,7 @@ class NoteDetailActivity : AppCompatActivity() {
         val id : Int = if(isUpdate) oldNote.id else 0
 
         // Create a new Note with the inputs (imageUri was set after an image was selected from gallery)
-        val note = Note(id,title,content,imageUri)
+        val note = Note(id,title,content,imageUri,false)
 
         // Save Note into the DB through the ViewModel
         noteViewModel.insert(note)

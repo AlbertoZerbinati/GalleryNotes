@@ -22,4 +22,7 @@ data class Note(
     @ColumnInfo(name="imageUri")
     var imageUri: String,
 
+    @ColumnInfo(name="deleted")
+    var deleted : Boolean
+
     ) : Serializable

@@ -21,4 +21,6 @@
     <string name="confirm_delete">Are you sure you want to delete the Note?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="close">close</string>
+    <string name="open">open</string>
 </resources>
