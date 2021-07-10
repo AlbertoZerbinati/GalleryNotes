@@ -17,7 +17,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
@@ -200,16 +199,22 @@ class NoteDetailActivity : AppCompatActivity() {
             R.id.add_image -> selectImage()         // Add or replace image
             R.id.share -> shareNote()               // Share note
             R.id.delete -> {                        // Delete note
+                /*
                 val alert: AlertDialog.Builder = AlertDialog.Builder(this)
                 alert.setTitle(R.string.delete_note)
                 alert.setMessage(R.string.confirm_delete)
                 alert.setPositiveButton(R.string.yes) { _, _ -> // confirmed note deletion
-                    deleteNote()
+                */
+                deleteNote()
+                Toast.makeText(this, "Note moved to the Bin", Toast.LENGTH_SHORT).show()
+                /*
+                 
                 }
                 alert.setNegativeButton(R.string.no) { dialog, _ -> // close dialog
                     dialog.cancel()
                 }
                 alert.show()
+                */
             }
         }
         return super.onOptionsItemSelected(item)
@@ -304,10 +309,10 @@ class NoteDetailActivity : AppCompatActivity() {
         else {
             val note: Note
 
-            if (isUpdate)
-                note = Note(oldNote.id, title, content, imageUri, true)
+            note = if (isUpdate)
+                Note(oldNote.id, title, content, imageUri, true)
             else
-                note = Note(0, title, content, imageUri, true)
+                Note(0, title, content, imageUri, true)
 
             // insert the Note in the database in the deleted table
             noteViewModel.insert(note)

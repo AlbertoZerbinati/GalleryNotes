@@ -6,16 +6,14 @@ import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
-import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -75,9 +73,9 @@ class NotesListActivity : AppCompatActivity(), NotesListener, NavigationView.OnN
             this,
             { notes ->
                 // Update the cached copy of notes in the adapter
-                notes?.let {
-                    adapter.setNotes(it.filter {
-                        !it.deleted // Only show the not-deleted Notes
+                notes?.let { it ->
+                    adapter.setNotes(it.filter { note ->
+                        note.deleted // Only show the not-deleted Notes
                     })
                 }
             }
@@ -101,10 +99,10 @@ class NotesListActivity : AppCompatActivity(), NotesListener, NavigationView.OnN
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             android.R.id.home -> {
-                if(!drawerLayout.isDrawerOpen(Gravity.LEFT))
-                    drawerLayout.openDrawer(Gravity.LEFT)
+                if(!drawerLayout.isDrawerOpen(GravityCompat.START))
+                    drawerLayout.openDrawer(GravityCompat.START)
                 else
-                    drawerLayout.closeDrawer(Gravity.LEFT)
+                    drawerLayout.closeDrawer(GravityCompat.START)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -172,28 +170,33 @@ class NotesListActivity : AppCompatActivity(), NotesListener, NavigationView.OnN
                     }
                     // Delete note: ask confirmation before deleting from DB
                     R.id.context_menu_delete -> {
+                        /*
                         val alert: AlertDialog.Builder = AlertDialog.Builder(this)
                         alert.setTitle(getString(R.string.delete_note))
                         alert.setMessage(getString(R.string.confirm_delete))
                         alert.setPositiveButton(getString(R.string.yes)) { _, _ -> // Confirmed note deletion
 
-                            /*
+
                             // Delete the image from the internal storage
                             if (note.imageUri.isNotEmpty())
                                 applicationContext.contentResolver.delete(Uri.parse(note.imageUri),null,null)
                             // Delete the note from the DB
                             noteViewModel.delete(note)
-                             */
+                        */
 
-                            // Set the Note as deleted
-                            note.deleted = true
-                            // And update the instance in the database
-                            noteViewModel.insert(note)
+                        // Set the Note as deleted
+                        note.deleted = true
+                        // And update the instance in the database
+                        noteViewModel.insert(note)
+                        Toast.makeText(this, "Note moved to the Bin", Toast.LENGTH_SHORT).show()
+                        /*
                         }
                         alert.setNegativeButton(getString(R.string.no)) { dialog, _ -> // Rejected note deletion
                             dialog.cancel()
                         }
                         alert.show()
+
+                         */
                         true
                     }
                     else -> false

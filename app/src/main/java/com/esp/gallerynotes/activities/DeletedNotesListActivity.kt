@@ -2,20 +2,14 @@
 
 package com.esp.gallerynotes.activities
 
-import android.content.ClipData
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
-import androidx.appcompat.widget.Toolbar
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -26,11 +20,10 @@ import com.esp.gallerynotes.utils.NotesAdapter
 import com.esp.gallerynotes.utils.NotesListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import java.io.Serializable
 
 /*
  * DeletedNotesListActivity shows all the deleted Notes in a RecyclerView.
- * Allows to reset a Note on long click
+ * Allows to reset o forever-delete a Note on long click
  */
 class DeletedNotesListActivity : AppCompatActivity(), NotesListener {
 
@@ -57,7 +50,7 @@ class DeletedNotesListActivity : AppCompatActivity(), NotesListener {
             this,
             { notes ->
                 // Update the cached copy of notes in the adapter
-                notes?.let {
+                notes?.let { it ->
                     adapter.setNotes(it.filter {
                         it.deleted // Only show the not-deleted Notes
                     })
@@ -88,9 +81,46 @@ class DeletedNotesListActivity : AppCompatActivity(), NotesListener {
 
     // When a note is long clicked
     override fun onNoteLongClicked(note: Note, v: View) {
-        Toast.makeText(this, "Resetting Note", Toast.LENGTH_SHORT).show()
 
-        note.deleted = false
-        noteViewModel.insert(note)
+        val popupMenu = PopupMenu(v.context, v)
+
+        // Detect the chosen action
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                // Restore note
+                R.id.context_menu_restore -> {
+                    // Set the Note as not deleted
+                    note.deleted = false
+                    // And update the instance in the database
+                    noteViewModel.insert(note)
+
+                    true
+                }
+                // Delete note forever
+                R.id.context_menu_delete_forever -> {
+                    val alert: AlertDialog.Builder = AlertDialog.Builder(this)
+                    alert.setTitle(getString(R.string.delete_note))
+                    alert.setMessage(getString(R.string.confirm_delete))
+                    alert.setPositiveButton(getString(R.string.yes)) { _, _ -> // Confirmed note deletion
+
+                        // Delete the image from the internal storage
+                        if (note.imageUri.isNotEmpty())
+                            applicationContext.contentResolver.delete(Uri.parse(note.imageUri),null,null)
+
+                        // Delete the note from the DB
+                        noteViewModel.delete(note)
+                    }
+                    alert.setNegativeButton(getString(R.string.no)) { dialog, _ -> // Rejected note deletion
+                        dialog.cancel()
+                    }
+                    alert.show()
+                    true
+                }
+                else -> false
+            }
+        }
+        popupMenu.inflate(R.menu.deleted_note_context_menu)
+        popupMenu.show()
+
     }
 }

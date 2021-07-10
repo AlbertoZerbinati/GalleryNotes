@@ -69,7 +69,7 @@ abstract class NotesDatabase : RoomDatabase() {
             val filename = context.getString(R.string.help_note_filename)
 
             val imagesFolder = File(context.filesDir, "images")
-            var uri: Uri? = null
+            val uri: Uri?
             
             imagesFolder.mkdirs()
             val file = File(imagesFolder, "$filename.jpeg")
