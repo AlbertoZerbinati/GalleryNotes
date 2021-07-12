@@ -39,6 +39,5 @@
         android:textColor="@color/white"
         android:textSize="14sp"
         android:visibility="gone"
-        android:maxHeight="250dp"
         />
 </androidx.appcompat.widget.LinearLayoutCompat>

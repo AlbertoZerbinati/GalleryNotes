@@ -2,6 +2,7 @@ package com.esp.gallerynotes.utils
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +51,21 @@ class NotesAdapter(var context: Context, notesListenerParam: NotesListener) : Re
         }
         // Content
         if(current.content.isNotBlank()) {
-            holder.noteContentView.text = current.content
+            val text = current.content
+            val sb = StringBuilder()
+            var count = 0
+
+            for (char in text) {
+                count += if (char == '\n') 30 else 1
+                sb.append(char)
+                if(count >= 160) {
+                    sb.trimToSize()
+                    sb.append("...")
+                    break
+                }
+            }
+
+            holder.noteContentView.text = sb.toString()
             holder.noteContentView.visibility = View.VISIBLE
         }
         // Image
