@@ -27,4 +27,5 @@
     <string name="delete_forever">Delete forever</string>
     <string name="bin">Bin</string>
     <string name="app_author">Alberto Zerbinati</string>
+    <string name="deleted_notes">Deleted Notes</string>
 </resources>

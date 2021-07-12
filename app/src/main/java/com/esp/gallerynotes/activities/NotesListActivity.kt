@@ -75,7 +75,7 @@ class NotesListActivity : AppCompatActivity(), NotesListener, NavigationView.OnN
                 // Update the cached copy of notes in the adapter
                 notes?.let { it ->
                     adapter.setNotes(it.filter { note ->
-                        note.deleted // Only show the not-deleted Notes
+                        !note.deleted // Only show the not-deleted Notes
                     })
                 }
             }

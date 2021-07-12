@@ -1,5 +1,3 @@
-@file:Suppress("PrivatePropertyName")
-
 package com.esp.gallerynotes.activities
 
 import android.net.Uri
@@ -65,7 +63,7 @@ class DeletedNotesListActivity : AppCompatActivity(), NotesListener {
         val navView : NavigationView = findViewById(R.id.nav_view)
         (navView.parent as ViewGroup).removeView(navView)
 
-        supportActionBar?.title = "Cancelled Notes"
+        supportActionBar?.title = getString(R.string.deleted_notes)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 

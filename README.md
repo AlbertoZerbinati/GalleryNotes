@@ -5,6 +5,7 @@ GalleryNotes is an android app that allows user to create text notes and link th
 - Create, Modify, Delete and Share notes
 - Nice, simple and consistent UI
 - Fast and responsive user interaction
+- Bin for recovering the deleted notes
 
 ## Screenshots
 <p>

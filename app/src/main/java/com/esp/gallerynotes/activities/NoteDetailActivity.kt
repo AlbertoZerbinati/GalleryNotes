@@ -227,7 +227,7 @@ class NoteDetailActivity : AppCompatActivity() {
         val title = noteTitle.text.toString().trim()
         val content = noteContent.text.toString().trim()
         val id : Int = if(isUpdate) oldNote.id else 0
-        val recoveredNote = Note(id,title,content,imageUri,oldNote.deleted)
+        val recoveredNote = Note(id,title,content,imageUri,if(isUpdate) oldNote.deleted else false)
 
         // Save in Instance State
         savedInstanceState.putSerializable("note", recoveredNote as Serializable)
