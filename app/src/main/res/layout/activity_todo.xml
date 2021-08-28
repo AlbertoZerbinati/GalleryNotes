@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.NotesListActivity"
+    tools:context=".activities.TodoActivity"
     android:id="@+id/drawer"
     >
 
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             app:hideOnScroll="true">
-<!--            app:fabAlignmentMode="end"-->
+            <!--            app:fabAlignmentMode="end"-->
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNav"

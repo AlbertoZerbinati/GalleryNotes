@@ -16,6 +16,7 @@ import com.esp.gallerynotes.database.Note
 import com.esp.gallerynotes.database.NoteViewModel
 import com.esp.gallerynotes.utils.NotesAdapter
 import com.esp.gallerynotes.utils.NotesListener
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
@@ -29,7 +30,7 @@ class DeletedNotesListActivity : AppCompatActivity(), NotesListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_notes_list)
+        setContentView(R.layout.activity_deleted_notes_list)
 
         // Setup recycler view
         val recyclerView = findViewById<RecyclerView>(R.id.notesRV)
@@ -55,13 +56,6 @@ class DeletedNotesListActivity : AppCompatActivity(), NotesListener {
                 }
             }
         )
-
-        // Get rid of non used UI components: fab and nav-drawer
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        (fab.parent as ViewGroup).removeView(fab)
-
-        val navView : NavigationView = findViewById(R.id.nav_view)
-        (navView.parent as ViewGroup).removeView(navView)
 
         supportActionBar?.title = getString(R.string.deleted_notes)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

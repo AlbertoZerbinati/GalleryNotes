@@ -28,4 +28,7 @@
     <string name="bin">Bin</string>
     <string name="app_author">Alberto Zerbinati</string>
     <string name="deleted_notes">Deleted Notes</string>
+    <string name="notes">Notes</string>
+    <string name="todos">Todos</string>
+    <string name="tasks">Tasks</string>
 </resources>

@@ -37,6 +37,10 @@
                 android:value="com.esp.gallerynotes.activities.NotesListActivity" />
         </activity>
 
+        <activity android:name="com.esp.gallerynotes.activities.TodoActivity"
+            android:theme="@style/Theme.GalleryNotes">
+        </activity>
+
         <activity android:name="com.esp.gallerynotes.activities.NotesListActivity"
             android:theme="@style/Theme.GalleryNotes" >
 

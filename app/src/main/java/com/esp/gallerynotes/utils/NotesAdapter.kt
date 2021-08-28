@@ -65,6 +65,9 @@ class NotesAdapter(var context: Context, notesListenerParam: NotesListener) : Re
                 }
             }
 
+            Log.e("AAA", count.toString())
+
+
             holder.noteContentView.text = sb.toString()
             holder.noteContentView.visibility = View.VISIBLE
         }
