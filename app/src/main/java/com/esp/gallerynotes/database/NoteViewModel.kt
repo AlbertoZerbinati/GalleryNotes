@@ -19,19 +19,29 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     //   the UI when the data actually changes
     // - Repository is completely separated from the UI through the ViewModel
     val allNotes: LiveData<List<Note>>
+    val allTasks: LiveData<List<Task>>
 
     // Initialize the repository and the cached notes
     init {
         val notesDao = NotesDatabase.getDatabase(application, viewModelScope).noteDao()
-        repository = NoteRepository(notesDao)
+        val tasksDao = NotesDatabase.getDatabase(application, viewModelScope).taskDao()
+        repository = NoteRepository(notesDao,tasksDao)
         allNotes = repository.allNotes
+        allTasks = repository.allTasks
     }
 
     // Launching coroutines to manipulate the data in a non-blocking way
     fun insert(note: Note) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insert(note)
+        repository.insertNote(note)
     }
     fun delete(note: Note) = viewModelScope.launch(Dispatchers.IO) {
-        repository.delete(note)
+        repository.deleteNote(note)
     }
+
+    fun insertTask(task: Task) = viewModelScope.launch(Dispatchers.IO) {
+        repository.insertTask(task)
+    }
+    fun getTask(id: Int) : LiveData<Task> = repository.getTask(id)
+    fun updateTask(task: Task) { repository.updateTask(task) }
+    fun deleteTask(task: Task) { repository.deleteTask(task) }
 }
