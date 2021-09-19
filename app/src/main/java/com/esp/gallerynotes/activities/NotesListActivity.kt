@@ -229,7 +229,7 @@ class NotesListActivity : AppCompatActivity(), NotesListener,
     // overloads method both for the navigation drawer
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.bin -> {
+            R.id.notes_bin -> {
                 val intent = Intent(applicationContext, DeletedNotesListActivity::class.java)
                 with(intent) {
                     startActivity(this)

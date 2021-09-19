@@ -20,7 +20,7 @@ import java.io.*
  */
 @Database(
     entities = [Note::class, Task::class],
-    version = 2,
+    version = 3,
 )
 @TypeConverters(Converters::class)
 abstract class NotesDatabase : RoomDatabase() {
@@ -41,6 +41,7 @@ abstract class NotesDatabase : RoomDatabase() {
                     context.getString(R.string.notes_database)
                 ).addCallback(NotesDatabaseCallback(scope, context)) // Add a callback
                     .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_2_3)
                     .build()
 
                 INSTANCE = instance
@@ -69,9 +70,17 @@ abstract class NotesDatabase : RoomDatabase() {
         private val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
-                    "CREATE TABLE 'tasks' ('id' INTEGER NOT NULL, 'content' TEXT NOT NULL, " +
-                            "'priority' TEXT CHECK('priority' IN ('HIGH', 'MEDIUM', 'LOW')) NOT NULL, 'creation_date' INTEGER NOT NULL, 'is_done' INTEGER NOT NULL, " +
-                            "PRIMARY KEY(`id`))"
+                    "CREATE TABLE tasks (id INTEGER NOT NULL, content TEXT NOT NULL, priority TEXT NOT NULL, creation_date INTEGER NOT NULL, is_done INTEGER NOT NULL, PRIMARY KEY(id), CHECK(priority IN ('HIGH', 'MEDIUM', 'LOW')));"
+                )
+            }
+        }
+        // Correct the previous migration
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("DELETE FROM tasks")
+                database.execSQL("DROP TABLE tasks")
+                database.execSQL(
+                    "CREATE TABLE tasks (id INTEGER NOT NULL, content TEXT NOT NULL, priority TEXT NOT NULL, creation_date INTEGER NOT NULL, is_done INTEGER NOT NULL, PRIMARY KEY(id), CHECK(priority IN ('HIGH', 'MEDIUM', 'LOW')));"
                 )
             }
         }

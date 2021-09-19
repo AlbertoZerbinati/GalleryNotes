@@ -25,11 +25,15 @@
     <string name="open">open</string>
     <string name="restore">Restore</string>
     <string name="delete_forever">Delete forever</string>
-    <string name="bin">Bin</string>
+    <string name="notes_bin">Notes Bin</string>
     <string name="app_author">Alberto Zerbinati</string>
     <string name="deleted_notes">Deleted Notes</string>
     <string name="notes">Notes</string>
     <string name="todos">Todos</string>
     <string name="tasks">Tasks</string>
     <string name="today">Today</string>
+    <string name="empty_task">Empty task ignored</string>
+    <string name="settings">Settings</string>
+    <string name="your_notes">Your Notes</string>
+    <string name="your_tasks">Your Tasks</string>
 </resources>

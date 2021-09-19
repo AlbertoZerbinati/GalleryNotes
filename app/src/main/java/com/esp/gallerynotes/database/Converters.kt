@@ -22,11 +22,11 @@ class Converters {
 
     @TypeConverter
     fun toPriority(s: String) : Priority? {
-        when(s) {
-            "HIGH" -> return Priority.HIGH
-            "MEDIUM" -> return Priority.MEDIUM
-            "LOW" -> return Priority.LOW
-            else -> return null
+        return when(s) {
+            "HIGH" -> Priority.HIGH
+            "MEDIUM" -> Priority.MEDIUM
+            "LOW" -> Priority.LOW
+            else -> null
         }
     }
 

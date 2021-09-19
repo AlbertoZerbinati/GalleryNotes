@@ -42,6 +42,10 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         repository.insertTask(task)
     }
     fun getTask(id: Int) : LiveData<Task> = repository.getTask(id)
-    fun updateTask(task: Task) { repository.updateTask(task) }
-    fun deleteTask(task: Task) { repository.deleteTask(task) }
+    fun updateTask(task: Task) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updateTask(task)
+    }
+    fun deleteTask(task: Task) = viewModelScope.launch(Dispatchers.IO) {
+        repository.deleteTask(task)
+    }
 }
