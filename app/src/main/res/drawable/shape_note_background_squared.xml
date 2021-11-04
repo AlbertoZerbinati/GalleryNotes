@@ -6,6 +6,6 @@
         android:startColor="@color/stormcloud"
         android:endColor="#2C9595"
         android:angle="-45"/>
-    <corners android:radius="6dp"/>
+    <corners android:radius="0dp"/>
 
 </shape>

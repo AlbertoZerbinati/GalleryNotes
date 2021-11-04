@@ -15,11 +15,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tasksRV"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="670dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:nestedScrollingEnabled="true"
-            />
+            android:nestedScrollingEnabled="true" />
 <!--            android:layout_marginStart="12dp"-->
 <!--            android:layout_marginEnd="12dp"-->
 
@@ -29,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:hideOnScroll="true">
+            app:hideOnScroll="false">
             <!--            app:fabAlignmentMode="end"-->
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -56,13 +55,13 @@
         <include layout="@layout/bottom_sheet"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-<!--    <com.google.android.material.navigation.NavigationView-->
-<!--        android:id="@+id/nav_view"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:menu="@menu/drawer_menu"-->
-<!--        android:layout_gravity="start"-->
-<!--        app:headerLayout="@layout/nav_header"-->
-<!--        />-->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:menu="@menu/drawer_menu"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        />
 
 </androidx.drawerlayout.widget.DrawerLayout>

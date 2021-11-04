@@ -61,6 +61,7 @@ class TodoBottomSheetFragment : BottomSheetDialogFragment() {
         }
         else {
             taskEt.setText("")
+            priorityRadioGroup.clearCheck()
         }
     }
 

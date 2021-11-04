@@ -16,6 +16,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.esp.gallerynotes.R
@@ -23,8 +24,10 @@ import com.esp.gallerynotes.database.Note
 import com.esp.gallerynotes.database.NoteViewModel
 import com.esp.gallerynotes.utils.NotesAdapter
 import com.esp.gallerynotes.utils.NotesListener
+import com.esp.gallerynotes.utils.RecyclerItemTouchHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import java.io.Serializable
 
 /*
@@ -42,6 +45,8 @@ class NotesListActivity : AppCompatActivity(), NotesListener,
     private lateinit var noteViewModel: NoteViewModel
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var bottomNavView: BottomNavigationView
+
+    private lateinit var itemTouchHelper: RecyclerItemTouchHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -229,6 +234,27 @@ class NotesListActivity : AppCompatActivity(), NotesListener,
     // overloads method both for the navigation drawer
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.notes -> {
+                val intent = Intent(applicationContext, NotesListActivity::class.java)
+                with(intent) {
+                    startActivity(this)
+                }
+                finish()
+            }
+            R.id.tasks -> {
+                val intent = Intent(applicationContext, TodoActivity::class.java)
+                with(intent) {
+                    startActivity(this)
+                }
+                finish()
+            }
+            R.id.settings -> {
+//                val intent = Intent(applicationContext, Settings::class.java)
+//                with(intent) {
+//                    startActivity(this)
+//                }
+                Snackbar.make(findViewById(R.id.drawer),"Not implemented yet (theme & main)...",Snackbar.LENGTH_SHORT).show()
+            }
             R.id.notes_bin -> {
                 val intent = Intent(applicationContext, DeletedNotesListActivity::class.java)
                 with(intent) {

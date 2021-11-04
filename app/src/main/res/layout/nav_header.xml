@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="180dp"
-    android:background="@color/stormcloud"
-    android:gravity="bottom"
+    android:background="@drawable/shape_note_background_squared"
+    android:hapticFeedbackEnabled="true"
+    android:gravity="center"
     android:orientation="vertical"
     android:paddingLeft="12dp"
     android:paddingTop="12dp"
@@ -21,7 +22,7 @@
         app:srcCompat="@mipmap/ic_launcher_round" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/app_name"
         android:fontFamily="@font/opensans_bold"
@@ -35,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/opensans_semibolditalic"
-        android:padding="4dp"
+        android:padding="6dp"
         android:text="@string/app_author"
         android:textSize="12sp"
         />
